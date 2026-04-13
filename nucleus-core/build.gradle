@@ -1,0 +1,5 @@
+dependencies {
+    // Aucune dépendance Spring — ce module est pur Kotlin
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+}
+

@@ -1,0 +1,18 @@
+plugins {
+    id 'org.jetbrains.kotlin.plugin.spring'
+}
+
+dependencies {
+    api project(':nucleus-core')
+
+    // Spring Boot — versions gérées par le consommateur (BOM)
+    compileOnly 'org.springframework.boot:spring-boot-autoconfigure:4.0.5'
+    compileOnly 'org.springframework:spring-webflux:7.0.6'
+    compileOnly 'org.springframework:spring-web:7.0.6'
+    compileOnly 'io.micrometer:micrometer-observation:1.15.0'
+    compileOnly 'org.slf4j:slf4j-api:2.0.17'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:4.0.5'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+}
+

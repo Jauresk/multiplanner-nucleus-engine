@@ -1,0 +1,5 @@
+rootProject.name = 'nucleus'
+
+include 'nucleus-core'
+include 'nucleus-observability-spring-boot-starter'
+
