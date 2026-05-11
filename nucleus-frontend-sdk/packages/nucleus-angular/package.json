@@ -1,0 +1,20 @@
+{
+  "name": "@multiplanner/nucleus-angular",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/public-api.js",
+  "types": "./dist/public-api.d.ts",
+  "peerDependencies": {
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "rxjs": "~7.8.2"
+  },
+  "dependencies": {
+    "@multiplanner/nucleus-frontend-core": "0.1.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"No tests yet\""
+  }
+}

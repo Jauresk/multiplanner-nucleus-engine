@@ -1,0 +1,10 @@
+TO DELETE:
+- NucleusOpAspectPro.kt (redondant)
+- NucleusOpAspectPro_V4_1.kt (vide)
+- NucleusWebFilterV4.kt (redondant)
+
+KEEP:
+- NucleusOpAspect.kt (aspect principal)
+- NucleusWebFilter.kt (web filter principal)
+- Operation.kt, NucleusOp.kt, ReactorOps.kt, NucleusOpsInfoContributor.kt (support)
+

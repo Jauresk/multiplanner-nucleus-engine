@@ -1,0 +1,19 @@
+{
+  "name": "@multiplanner/nucleus-react-native",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "peerDependencies": {
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "dependencies": {
+    "@multiplanner/nucleus-frontend-core": "0.1.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"No tests yet\""
+  }
+}
