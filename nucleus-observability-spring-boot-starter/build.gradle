@@ -1,25 +1,33 @@
 plugins {
     id 'org.jetbrains.kotlin.plugin.spring'
+    id 'java-library'
 }
+
 dependencies {
+    // ── Dépendance sur nucleus-core (expose transitives : Spring, Reactor, Micrometer, SLF4J) ──
     api project(':nucleus-core')
-    // Spring Boot -- versions gerees par le consommateur (BOM)
-    compileOnly 'org.springframework.boot:spring-boot-autoconfigure:4.0.5'
-    compileOnly 'org.springframework.boot:spring-boot-actuator:4.0.5'
-    compileOnly 'org.springframework:spring-webflux:7.0.6'
-    compileOnly 'org.springframework:spring-web:7.0.6'
-    compileOnly 'org.springframework:spring-context:7.0.6'
-    // AOP -- pour @Aspect / @Around
-    compileOnly 'org.aspectj:aspectjweaver:1.9.22.1'
-    // Micrometer
-    compileOnly 'io.micrometer:micrometer-observation:1.15.0'
-    compileOnly 'io.micrometer:micrometer-core:1.15.0'
-    compileOnly 'io.projectreactor:reactor-core:3.7.6'
-    compileOnly 'io.projectreactor.addons:reactor-extra:3.5.2'
-    // Reactor + Micrometer integration
-    compileOnly 'io.projectreactor:reactor-core-micrometer:1.2.3'
-    // Logging
-    compileOnly 'org.slf4j:slf4j-api:2.0.17'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:4.0.5'
+
+    // ── BOM Spring Boot 4 : source de vérité unique ───────────────────────────
+    api              platform('org.springframework.boot:spring-boot-dependencies:4.0.6')
+    testImplementation platform('org.springframework.boot:spring-boot-dependencies:4.0.6')
+
+    // ── Spring Boot auto-config (chargée au démarrage de l'app) ──────────────
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    // ── Actuator (optionnel : InfoContributor, HealthIndicator) ───────────────
+    compileOnly 'org.springframework.boot:spring-boot-actuator'
+
+    // ── AOP : aspectjweaver requis à l'exécution pour créer les proxys ────────
+    implementation 'org.aspectj:aspectjweaver'
+
+    // ── Micrometer Observation (NucleusOpAspect, QuotaMetricsService) ─────────
+    implementation 'io.micrometer:micrometer-observation'
+
+    // ── Reactor extras + instrumentation Micrometer (optionnels au compileOnly)
+    compileOnly 'io.projectreactor.addons:reactor-extra'
+    compileOnly 'io.projectreactor:reactor-core-micrometer'
+
+    // ── Tests ─────────────────────────────────────────────────────────────────
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
 }
