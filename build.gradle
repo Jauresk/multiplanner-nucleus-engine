@@ -1,6 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id 'org.jetbrains.kotlin.jvm'          version '2.2.21' apply false
-    id 'org.jetbrains.kotlin.plugin.spring' version '2.2.21' apply false
+    id 'org.jetbrains.kotlin.jvm'          version '2.3.21' apply false
+    id 'org.jetbrains.kotlin.plugin.spring' version '2.3.21' apply false
     // ── Sécurité ──────────────────────────────────────────────────────────────
     id 'org.owasp.dependencycheck'          version '12.2.1'
     id 'org.cyclonedx.bom'                  version '3.2.4'
@@ -39,16 +41,20 @@ subprojects {
 
     kotlin {
         compilerOptions {
-            // Kotlin 2.2.x ne supporte pas encore le JVM target 25 → target 24
-            // À remonter à JVM_25 dès le support officiel Kotlin
-            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24
+            // Kotlin 2.3.x supporte JVM target 25 (sorti avec JVM 25 en sept 2025)
+            jvmTarget = JvmTarget.JVM_25
             freeCompilerArgs.addAll '-Xjsr305=strict'
         }
     }
 
-    // Aligner compileJava sur la même cible que Kotlin (évite l'erreur d'incompatibilité)
-    tasks.withType(JavaCompile).configureEach {
-        options.release = 24
+    // ── Sécurité Log4j : bloquer toute entrée transitive de Log4j (Log4Shell) ─
+    // NUCLEUS utilise exclusivement SLF4J + Logback via spring-boot-starter-logging
+    // Ne pas ajouter spring-boot-starter-log4j2 — cette règle s'applique à tous les sous-modules
+    configurations.configureEach {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-core'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+        exclude group: 'org.springframework.boot',  module: 'spring-boot-starter-log4j2'
     }
 
     repositories {
