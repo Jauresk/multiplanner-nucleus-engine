@@ -700,7 +700,20 @@ enum class MultiplannerOperation(val module: String, val action: String) {
     PLANIVENTE_ACTIVITY_PROFILE_WRITE("planivente", "activityProfileWrite"),
 
     /** Lecture publique shell métier (B2C). */
-    PLANIVENTE_PUBLIC_SHELL_READ("planivente", "publicShellRead");
+    PLANIVENTE_PUBLIC_SHELL_READ("planivente", "publicShellRead"),
+
+    // ========== Pertinence - Télémétrie ==========
+    /** Ingestion d'un événement de télémétrie Pertinence (endpoint interne backend-enrichment). */
+    PERTINENCE_TELEMETRY_INGEST_EVENT("pertinence", "telemetryIngestEvent"),
+
+    /** Ingestion d'un lot d'événements de télémétrie Pertinence (endpoint interne backend-enrichment). */
+    PERTINENCE_TELEMETRY_INGEST_BATCH("pertinence", "telemetryIngestBatch"),
+
+    /** Réception proxy d'un événement de télémétrie Pertinence (gateway backend-api). */
+    PERTINENCE_TELEMETRY_PROXY_RECEIVE("pertinence", "telemetryProxyReceive"),
+
+    /** Réception proxy d'un lot d'événements de télémétrie Pertinence (gateway backend-api). */
+    PERTINENCE_TELEMETRY_PROXY_BATCH("pertinence", "telemetryProxyBatch");
 
     // ========== Propriétés dérivées ==========
 
