@@ -1,9 +1,15 @@
 plugins {
     id 'org.jetbrains.kotlin.plugin.spring'
+    id 'org.jetbrains.kotlin.kapt'
     id 'java-library'
 }
 
 dependencies {
+    // ── Configuration Processor — génère spring-configuration-metadata.json ──────
+    // Requis pour que IntelliJ reconnaisse nucleus.* dans application.yml.
+    // Note : kapt ne participe pas au BOM, la version doit être explicite.
+    kapt 'org.springframework.boot:spring-boot-configuration-processor:4.0.6'
+
     // ── Dépendance sur nucleus-core (expose transitives : Spring, Reactor, Micrometer, SLF4J) ──
     api project(':nucleus-core')
 
@@ -23,9 +29,12 @@ dependencies {
     // ── Micrometer Observation (NucleusOpAspect, QuotaMetricsService) ─────────
     implementation 'io.micrometer:micrometer-observation'
 
-    // ── Reactor extras + instrumentation Micrometer (optionnels au compileOnly)
+    // "€"€ Reactor extras + instrumentation Micrometer
+    // reactor-core-micrometer : DOIT être 'implementation' (pas compileOnly) car
+    // NucleusOpAspectProFixedV2 appelle reactor.core.observability.micrometer.Micrometer
+    // au runtime — compileOnly provoque NoClassDefFoundError lors de l'interception AOP.
     compileOnly 'io.projectreactor.addons:reactor-extra'
-    compileOnly 'io.projectreactor:reactor-core-micrometer'
+    implementation 'io.projectreactor:reactor-core-micrometer'
 
     // ── Tests ─────────────────────────────────────────────────────────────────
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -73,11 +73,31 @@ class NucleusWebFilter(
 
         val mutatedExchange = exchange.mutate().request(mutatedRequest).build()
 
+        // 6. Enregistrer beforeCommit pour écrire les headers AVANT que la réponse soit verrouillée.
+        //    Ne jamais écrire des headers dans doFinally (ReadOnlyHttpHeaders après commit).
+        //    try-catch défensif : Spring 7 peut verrouiller les headers sur certains chemins d'erreur
+        //    (DefaultErrorWebExceptionHandler, ServerResponse wrappers) même à l'intérieur de beforeCommit.
+        mutatedExchange.response.beforeCommit {
+            val elapsedMs = (System.nanoTime() - start) / 1_000_000
+            try {
+                mutatedExchange.response.headers.set(NucleusHeaders.REQUEST_TIMING, "${elapsedMs}ms")
+                // Propager le correlation ID dans la réponse pour le client
+                if (mutatedExchange.response.headers[NucleusHeaders.CORRELATION_ID] == null) {
+                    mutatedExchange.response.headers.set(NucleusHeaders.CORRELATION_ID, correlationId)
+                }
+            } catch (e: UnsupportedOperationException) {
+                log.trace(
+                    "Nucleus: impossible d'injecter les headers de réponse — déjà verrouillés [{} {} {}ms] — {}",
+                    method, path, elapsedMs, e.message
+                )
+            }
+            Mono.empty()
+        }
+
         return chain.filter(mutatedExchange)
             .doFinally {
-                // 6. Timing
+                // doFinally = logs + MDC cleanup uniquement, jamais de mutation de headers
                 val elapsedMs = (System.nanoTime() - start) / 1_000_000
-                exchange.response.headers.set(NucleusHeaders.REQUEST_TIMING, "${elapsedMs}ms")
 
                 log.debug(
                     "Nucleus [{}] {} {} — {}ms — tags={}",
